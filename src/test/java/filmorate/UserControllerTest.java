@@ -1,8 +1,8 @@
-package javaFilmorate;
+package filmorate;
 
-import javaFilmorate.controller.UserController;
-import javaFilmorate.exception.ValidationException;
-import javaFilmorate.model.User;
+import filmorate.controller.UserController;
+import filmorate.exception.ValidationException;
+import filmorate.model.User;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

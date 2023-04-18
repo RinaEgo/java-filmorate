@@ -1,8 +1,8 @@
-package javaFilmorate;
+package filmorate;
 
-import javaFilmorate.controller.FilmController;
-import javaFilmorate.exception.ValidationException;
-import javaFilmorate.model.Film;
+import filmorate.controller.FilmController;
+import filmorate.exception.ValidationException;
+import filmorate.model.Film;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;

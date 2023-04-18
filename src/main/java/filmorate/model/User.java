@@ -1,4 +1,4 @@
-package javaFilmorate.model;
+package filmorate.model;
 
 import java.time.LocalDate;
 

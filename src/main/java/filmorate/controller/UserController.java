@@ -1,7 +1,7 @@
-package javaFilmorate.controller;
+package filmorate.controller;
 
-import javaFilmorate.exception.ValidationException;
-import javaFilmorate.model.User;
+import filmorate.exception.ValidationException;
+import filmorate.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;

@@ -1,4 +1,4 @@
-package javaFilmorate.exception;
+package filmorate.exception;
 
 public class ValidationException extends RuntimeException {
 
