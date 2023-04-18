@@ -2,8 +2,7 @@ package filmorate.controller;
 
 import filmorate.exception.ValidationException;
 import filmorate.model.User;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -11,8 +10,8 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/users")
+@Slf4j
 public class UserController {
-    private final static Logger log = LoggerFactory.getLogger(UserController.class);
     private final Map<Integer, User> users = new HashMap<>();
     private int userId = 1;
 
