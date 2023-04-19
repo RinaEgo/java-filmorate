@@ -3,9 +3,10 @@ package filmorate.controller;
 import filmorate.exception.ValidationException;
 import filmorate.model.User;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
+import javax.validation.Valid;
 import java.util.*;
 
 @RestController
@@ -21,7 +22,7 @@ public class UserController {
     }
 
     @PostMapping()
-    public User createUser(@RequestBody User user) {
+    public User createUser(@Valid @RequestBody User user) {
         if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
@@ -29,15 +30,6 @@ public class UserController {
         if (users.containsKey(user.getId())) {
             log.warn("Пользователь уже существует.");
             throw new ValidationException("Пользователь уже существует.");
-        } else if (user.getEmail().isBlank() || user.getEmail().isEmpty() || !user.getEmail().contains("@")) {
-            log.warn("Email введён некорректно.");
-            throw new ValidationException("Email введён некорректно.");
-        } else if (user.getLogin().isBlank() || user.getLogin().isEmpty()) {
-            log.warn("Логин введён некорректно.");
-            throw new ValidationException("Логин введён некорректно.");
-        } else if (user.getBirthday().isAfter(LocalDate.now())) {
-            log.warn("Дата рождения указана некорректно.");
-            throw new ValidationException("Дата рождения указана некорректно.");
         } else {
             user.setId(userId);
             users.put(user.getId(), user);
@@ -48,7 +40,7 @@ public class UserController {
     }
 
     @PutMapping()
-    public User updateUser(@RequestBody User user) { //todo add logs
+    public User updateUser(@Valid @RequestBody User user) {
 
         if (users.containsKey(user.getId())) {
             users.put(user.getId(), user);

@@ -1,17 +1,30 @@
 package filmorate;
 
 import filmorate.controller.UserController;
-import filmorate.exception.ValidationException;
 import filmorate.model.User;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDate;
 import java.util.List;
 
-public class UserControllerTest {
+class UserControllerTest {
+    ValidatorFactory factory;
+    private Validator validator;
+
     UserController userController = new UserController();
+
+    @BeforeEach
+    public void beforeEach() {
+        factory = Validation.buildDefaultValidatorFactory();
+        validator = factory.getValidator();
+    }
 
     @Test
     void shouldCreateUser() {
@@ -36,14 +49,12 @@ public class UserControllerTest {
     @Test
     void shouldNotCreateUserWithNoEmail() {
         User user = new User(2,
-                " ",
+                "",
                 "dolore",
                 "Nick Name",
                 LocalDate.of(1946, 8, 20));
 
-        Throwable thrown = assertThrows(ValidationException.class, () -> userController.createUser(user));
-        assertNotNull(thrown.getMessage());
-        assertEquals("Email введён некорректно.", thrown.getMessage());
+        assertEquals(1, validator.validate(user).size(), "Некорректная работа с ошибочными данными.");
 
         List<User> testList = userController.findAllUsers();
         assertEquals(0, testList.size(), "Был добавлен пользователь с некорректными данными.");
@@ -57,9 +68,7 @@ public class UserControllerTest {
                 "Nick Name",
                 LocalDate.of(1946, 8, 20));
 
-        Throwable thrown = assertThrows(ValidationException.class, () -> userController.createUser(user));
-        assertNotNull(thrown.getMessage());
-        assertEquals("Email введён некорректно.", thrown.getMessage());
+        assertEquals(1, validator.validate(user).size(), "Некорректная работа с ошибочными данными.");
 
         List<User> testList = userController.findAllUsers();
         assertEquals(0, testList.size(), "Был добавлен пользователь с некорректными данными.");
@@ -73,9 +82,7 @@ public class UserControllerTest {
                 "Nick Name",
                 LocalDate.of(1946, 8, 20));
 
-        Throwable thrown = assertThrows(ValidationException.class, () -> userController.createUser(user));
-        assertNotNull(thrown.getMessage());
-        assertEquals("Логин введён некорректно.", thrown.getMessage());
+        assertEquals(1, validator.validate(user).size(), "Некорректная работа с ошибочными данными.");
 
         List<User> testList = userController.findAllUsers();
         assertEquals(0, testList.size(), "Был добавлен пользователь с некорректными данными.");
@@ -89,9 +96,7 @@ public class UserControllerTest {
                 "Nick Name",
                 LocalDate.of(1946, 8, 20));
 
-        Throwable thrown = assertThrows(ValidationException.class, () -> userController.createUser(user));
-        assertNotNull(thrown.getMessage());
-        assertEquals("Логин введён некорректно.", thrown.getMessage());
+        assertEquals(1, validator.validate(user).size(), "Некорректная работа с ошибочными данными.");
 
         List<User> testList = userController.findAllUsers();
         assertEquals(0, testList.size(), "Был добавлен пользователь с некорректными данными.");
@@ -119,9 +124,7 @@ public class UserControllerTest {
                 "Nick Name",
                 LocalDate.of(2046, 8, 20));
 
-        Throwable thrown = assertThrows(ValidationException.class, () -> userController.createUser(user));
-        assertNotNull(thrown.getMessage());
-        assertEquals("Дата рождения указана некорректно.", thrown.getMessage());
+        assertEquals(1, validator.validate(user).size(), "Некорректная работа с ошибочными данными.");
 
         List<User> testList = userController.findAllUsers();
         assertEquals(0, testList.size(), "Был добавлен пользователь с некорректными данными.");
