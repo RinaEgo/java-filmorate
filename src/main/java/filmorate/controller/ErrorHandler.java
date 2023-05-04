@@ -15,21 +15,21 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse HandleNotFoundException(final NotFoundException e) {
+    public ErrorResponse handleNotFoundException(final NotFoundException e) {
         log.info("404 {}", e.getMessage());
         return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse HandleValidationException(final ValidationException e) {
+    public ErrorResponse handleValidationException(final ValidationException e) {
         log.info("400 {}", e.getMessage());
         return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse HandleException(final Throwable e) {
+    public ErrorResponse handleException(final Throwable e) {
         log.info("500 {}", e.getMessage());
         return new ErrorResponse("Произошла непредвиденная ошибка.");
     }
