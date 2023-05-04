@@ -2,8 +2,11 @@ package filmorate;
 
 import filmorate.controller.UserController;
 import filmorate.model.User;
+import filmorate.service.UserService;
+import filmorate.storage.user.InMemoryUserStorage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -17,8 +20,8 @@ import java.util.List;
 class UserControllerTest {
     ValidatorFactory factory;
     private Validator validator;
-
-    UserController userController = new UserController();
+    @Autowired
+    UserController userController = new UserController(new UserService(new InMemoryUserStorage()));
 
     @BeforeEach
     public void beforeEach() {

@@ -3,8 +3,14 @@ package filmorate;
 import filmorate.controller.FilmController;
 import filmorate.exception.ValidationException;
 import filmorate.model.Film;
+
+import filmorate.service.FilmService;
+import filmorate.service.UserService;
+import filmorate.storage.film.InMemoryFilmStorage;
+import filmorate.storage.user.InMemoryUserStorage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -17,7 +23,9 @@ import static org.junit.jupiter.api.Assertions.*;
 class FilmControllerTest {
     ValidatorFactory factory;
     private Validator validator;
-    FilmController filmController = new FilmController();
+    @Autowired
+    FilmController filmController = new FilmController(new FilmService(new InMemoryFilmStorage(), new UserService(new InMemoryUserStorage())));
+
 
     @BeforeEach
     public void beforeEach() {
