@@ -3,7 +3,6 @@ package filmorate.service;
 import filmorate.exception.NotFoundException;
 import filmorate.model.User;
 import filmorate.storage.user.UserStorage;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -13,7 +12,6 @@ import java.util.List;
 public class UserService {
     private final UserStorage userStorage;
 
-    @Autowired
     public UserService(UserStorage userStorage) {
         this.userStorage = userStorage;
     }

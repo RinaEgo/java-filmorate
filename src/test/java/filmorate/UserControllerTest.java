@@ -30,7 +30,7 @@ class UserControllerTest {
     }
 
     @Test
-    void shouldCreateUser() {
+    void testCreateUser() {
         User user = new User(1,
                 "mail@mail.ru",
                 "dolore",
@@ -50,7 +50,7 @@ class UserControllerTest {
     }
 
     @Test
-    void shouldNotCreateUserWithNoEmail() {
+    void testFailCreateUserWithNoEmail() {
         User user = new User(2,
                 "",
                 "dolore",
@@ -64,7 +64,7 @@ class UserControllerTest {
     }
 
     @Test
-    void shouldNotCreateUserWithWrongEmail() {
+    void testFailCreateUserWithWrongEmail() {
         User user = new User(2,
                 "wrong.com",
                 "dolore",
@@ -78,7 +78,7 @@ class UserControllerTest {
     }
 
     @Test
-    void shouldNotCreateUserWithNoLogin() {
+    void testFailCreateUserWithNoLogin() {
         User user = new User(2,
                 "mail@mail.ru",
                 "",
@@ -92,7 +92,7 @@ class UserControllerTest {
     }
 
     @Test
-    void shouldNotCreateUserWithBlankLogin() {
+    void testFailCreateUserWithBlankLogin() {
         User user = new User(2,
                 "mail@mail.ru",
                 " ",
@@ -106,7 +106,7 @@ class UserControllerTest {
     }
 
     @Test
-    void shouldCreateUserWithNoName() {
+    void testCreateUserWithNoName() {
         User user = new User(2,
                 "mail@mail.ru",
                 "Login",
@@ -120,7 +120,7 @@ class UserControllerTest {
     }
 
     @Test
-    void shouldNotCreateUserWithWrongBirthDate() {
+    void testFailCreateUserWithWrongBirthDate() {
         User user = new User(3,
                 "mail@mail.ru",
                 "dolore",

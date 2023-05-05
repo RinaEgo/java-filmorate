@@ -3,7 +3,6 @@ package filmorate.service;
 import filmorate.exception.NotFoundException;
 import filmorate.model.Film;
 import filmorate.storage.film.FilmStorage;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -15,7 +14,6 @@ public class FilmService {
     private final FilmStorage filmStorage;
     private final UserService userService;
 
-    @Autowired
     public FilmService(FilmStorage filmStorage, UserService userService) {
         this.filmStorage = filmStorage;
         this.userService = userService;
