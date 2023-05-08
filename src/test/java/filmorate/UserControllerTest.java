@@ -2,8 +2,11 @@ package filmorate;
 
 import filmorate.controller.UserController;
 import filmorate.model.User;
+import filmorate.service.UserService;
+import filmorate.storage.user.InMemoryUserStorage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -17,8 +20,8 @@ import java.util.List;
 class UserControllerTest {
     ValidatorFactory factory;
     private Validator validator;
-
-    UserController userController = new UserController();
+    @Autowired
+    UserController userController = new UserController(new UserService(new InMemoryUserStorage()));
 
     @BeforeEach
     public void beforeEach() {
@@ -27,7 +30,7 @@ class UserControllerTest {
     }
 
     @Test
-    void shouldCreateUser() {
+    void testCreateUser() {
         User user = new User(1,
                 "mail@mail.ru",
                 "dolore",
@@ -47,7 +50,7 @@ class UserControllerTest {
     }
 
     @Test
-    void shouldNotCreateUserWithNoEmail() {
+    void testFailCreateUserWithNoEmail() {
         User user = new User(2,
                 "",
                 "dolore",
@@ -61,7 +64,7 @@ class UserControllerTest {
     }
 
     @Test
-    void shouldNotCreateUserWithWrongEmail() {
+    void testFailCreateUserWithWrongEmail() {
         User user = new User(2,
                 "wrong.com",
                 "dolore",
@@ -75,7 +78,7 @@ class UserControllerTest {
     }
 
     @Test
-    void shouldNotCreateUserWithNoLogin() {
+    void testFailCreateUserWithNoLogin() {
         User user = new User(2,
                 "mail@mail.ru",
                 "",
@@ -89,7 +92,7 @@ class UserControllerTest {
     }
 
     @Test
-    void shouldNotCreateUserWithBlankLogin() {
+    void testFailCreateUserWithBlankLogin() {
         User user = new User(2,
                 "mail@mail.ru",
                 " ",
@@ -103,7 +106,7 @@ class UserControllerTest {
     }
 
     @Test
-    void shouldCreateUserWithNoName() {
+    void testCreateUserWithNoName() {
         User user = new User(2,
                 "mail@mail.ru",
                 "Login",
@@ -117,7 +120,7 @@ class UserControllerTest {
     }
 
     @Test
-    void shouldNotCreateUserWithWrongBirthDate() {
+    void testFailCreateUserWithWrongBirthDate() {
         User user = new User(3,
                 "mail@mail.ru",
                 "dolore",

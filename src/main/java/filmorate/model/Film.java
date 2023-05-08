@@ -1,7 +1,10 @@
 package filmorate.model;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
@@ -13,7 +16,6 @@ import javax.validation.constraints.Positive;
 @Setter
 @ToString
 @EqualsAndHashCode
-@AllArgsConstructor
 public class Film {
 
     private Integer id;
@@ -29,4 +31,16 @@ public class Film {
 
     @Positive(message = "Продолжительность фильма должна быть положительной.")
     private final Integer duration;
+
+    @JsonIgnore
+    private Set<Integer> likes;
+
+    public Film(Integer id, String name, String description, LocalDate releaseDate, Integer duration) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.releaseDate = releaseDate;
+        this.duration = duration;
+        this.likes = new HashSet<>();
+    }
 }

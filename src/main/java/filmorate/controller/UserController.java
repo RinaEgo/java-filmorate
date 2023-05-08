@@ -1,7 +1,7 @@
 package filmorate.controller;
 
-import filmorate.exception.ValidationException;
 import filmorate.model.User;
+import filmorate.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.web.bind.annotation.*;
@@ -13,42 +13,51 @@ import java.util.*;
 @RequestMapping("/users")
 @Slf4j
 public class UserController {
-    private final Map<Integer, User> users = new HashMap<>();
-    private int userId = 1;
+    private final UserService userService;
 
-    @GetMapping()
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
+    @GetMapping
     public List<User> findAllUsers() {
-        return new ArrayList<>(users.values());
+        return userService.findAllUsers();
     }
 
-    @PostMapping()
+    @GetMapping("/{id}")
+    public User getUserById(@PathVariable Integer id) {
+        return userService.getUserById(id);
+    }
+
+    @PostMapping
     public User createUser(@Valid @RequestBody User user) {
-        if (user.getName() == null || user.getName().isBlank()) {
-            user.setName(user.getLogin());
-        }
-
-        if (users.containsKey(user.getId())) {
-            log.warn("Пользователь уже существует.");
-            throw new ValidationException("Пользователь уже существует.");
-        } else {
-            user.setId(userId);
-            users.put(user.getId(), user);
-            userId++;
-            log.info("Пользователь {} добавлен.", user);
-        }
-        return user;
+        return userService.createUser(user);
     }
 
-    @PutMapping()
+    @PutMapping
     public User updateUser(@Valid @RequestBody User user) {
+        return userService.updateUser(user);
+    }
 
-        if (users.containsKey(user.getId())) {
-            users.put(user.getId(), user);
-            log.info("Пользователь {} добавлен.", user);
-        } else {
-            log.warn("Пользователь не был зарегистрирован.");
-            throw new ValidationException("Пользователь не был зарегистрирован.");
-        }
-        return user;
+    @PutMapping("/{id}/friends/{friendId}")
+    public void addFriend(@PathVariable Integer id, @PathVariable Integer friendId) {
+        userService.addFriend(id, friendId);
+        log.info("Пользователь с ID = " + id + " добавил в друзья пользователя с ID = " + friendId + ".");
+    }
+
+    @DeleteMapping("{id}/friends/{friendId}")
+    public void deleteFriendById(@PathVariable Integer id, @PathVariable Integer friendId) {
+        userService.deleteFriend(id, friendId);
+        log.info("Пользователь с ID = " + id + " удалил из друзей пользователя с ID = " + friendId + ".");
+    }
+
+    @GetMapping("/{id}/friends")
+    public List<User> getFriendByID(@PathVariable Integer id) {
+        return userService.getFriendsList(id);
+    }
+
+    @GetMapping("/{id}/friends/common/{friendId}")
+    public List<User> getCommonFriends(@PathVariable Integer id, @PathVariable Integer friendId) {
+        return userService.getCommonFriends(id, friendId);
     }
 }

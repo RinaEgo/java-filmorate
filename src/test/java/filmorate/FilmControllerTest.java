@@ -3,8 +3,14 @@ package filmorate;
 import filmorate.controller.FilmController;
 import filmorate.exception.ValidationException;
 import filmorate.model.Film;
+
+import filmorate.service.FilmService;
+import filmorate.service.UserService;
+import filmorate.storage.film.InMemoryFilmStorage;
+import filmorate.storage.user.InMemoryUserStorage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -17,7 +23,9 @@ import static org.junit.jupiter.api.Assertions.*;
 class FilmControllerTest {
     ValidatorFactory factory;
     private Validator validator;
-    FilmController filmController = new FilmController();
+    @Autowired
+    FilmController filmController = new FilmController(new FilmService(new InMemoryFilmStorage(),
+            new UserService(new InMemoryUserStorage())));
 
     @BeforeEach
     public void beforeEach() {
@@ -26,7 +34,7 @@ class FilmControllerTest {
     }
 
     @Test
-    void shouldCreateFilm() {
+    void testCreateFilm() {
         Film film = new Film(1,
                 "Film",
                 "Comedy",
@@ -46,7 +54,7 @@ class FilmControllerTest {
     }
 
     @Test
-    void shouldNotCreateFilmWithNoName() {
+    void testFailCreateFilmWithNoName() {
         Film film = new Film(1,
                 "",
                 "Comedy",
@@ -60,7 +68,7 @@ class FilmControllerTest {
     }
 
     @Test
-    void shouldNotCreateFilmWithBlancName() {
+    void testFailCreateFilmWithBlancName() {
         Film film = new Film(1,
                 " ",
                 "Comedy",
@@ -74,7 +82,7 @@ class FilmControllerTest {
     }
 
     @Test
-    void shouldNotCreateFilmWithHugeDescription() {
+    void testFailCreateFilmWithHugeDescription() {
         Film film = new Film(1,
                 "Film",
                 "toomanysymbolstoomanysymbolstoomanysymbolstoomanysymbolstoomanysymbolstoomanysymbols" +
@@ -90,7 +98,7 @@ class FilmControllerTest {
     }
 
     @Test
-    void shouldNotCreateTooOldFilm() {
+    void testFailCreateTooOldFilm() {
         Film film = new Film(1,
                 "Film",
                 "Comedy",
@@ -98,7 +106,7 @@ class FilmControllerTest {
                 120);
 
         Throwable thrown = assertThrows(ValidationException.class, () -> filmController.createFilm(film));
-        assertNotNull(thrown.getMessage());
+        assertNotNull(thrown.getMessage(), "Исключение выбрасывается некорректно.");
         assertEquals("Дата релиза раньше допустимой.", thrown.getMessage(), "Выброс исключения работает некорректно.");
 
         List<Film> testList = filmController.findAllFilms();
@@ -106,7 +114,7 @@ class FilmControllerTest {
     }
 
     @Test
-    void shouldNotCreateFilmWithNegativeDuration() {
+    void testFailCreateFilmWithNegativeDuration() {
         Film film = new Film(1,
                 "Film",
                 "Comedy",
@@ -120,7 +128,7 @@ class FilmControllerTest {
     }
 
     @Test
-    void shouldNotCreateFilmWithZeroDuration() {
+    void testFailCreateFilmWithZeroDuration() {
         Film film = new Film(1,
                 "Film",
                 "Comedy",
