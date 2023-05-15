@@ -4,12 +4,12 @@ Template repository for Filmorate project.
 
 Примеры запросов к БД:
 1. Получить фильм по идентификатору (n): 
-      SELECT * 
+      `SELECT * 
       FROM FILM
-      WHERE id = n;
+      WHERE id = n;`
 
 2. Получить 10 самых популярных фильмов:
-      SELECT f.*
+     `SELECT f.*
       FROM (
           SELECT film_id,
                  COUNT(user_id) AS likes_count
@@ -18,17 +18,17 @@ Template repository for Filmorate project.
           ) AS l
       RIGHT JOIN FILM f ON f.id = l.film_id
       ORDER BY likes_count DESC 
-      LIMIT 10;
+      LIMIT 10;`
      
 3. Получить жанры фильма с id = n:
-      SELECT g.name AS genre
+     `SELECT g.name AS genre
       FROM GENRE g
       LEFT JOIN film_genre fg ON fg.genre_id = g.genre_id
-      WHERE fg.film_id = n;
+      WHERE fg.film_id = n;`
       
  4. Получить список подтвержденных друзей пользователя с id = n:
-      SELECT u.*
+      `SELECT u.*
       FROM friends f
       JOIN USER u ON u.id = f.user_id
       WHERE f.user_id = n
-            AND f.confirmed;
+            AND f.confirmed;`
