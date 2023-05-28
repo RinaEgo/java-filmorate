@@ -6,6 +6,7 @@ import filmorate.storage.GenreStorage;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
 @Service
 public class GenreService {
     private final GenreStorage genreStorage;

@@ -53,7 +53,7 @@ public class UserService {
         validateUser(userId);
         validateUser(friendId);
 
-       userStorage.deleteFriend(userId, friendId);
+        userStorage.deleteFriend(userId, friendId);
     }
 
     public List<User> getFriendsList(Integer userId) {

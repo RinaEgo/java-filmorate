@@ -38,7 +38,6 @@ public class Film {
     @JsonIgnore
     private Set<Integer> likes;
 
-
     public Film(Integer id, String name, String description, LocalDate releaseDate, Integer duration, Mpa mpa) {
         this.id = id;
         this.name = name;
@@ -49,7 +48,6 @@ public class Film {
         this.genres = new LinkedHashSet<>();
         this.likes = new LinkedHashSet<>();
     }
-
 
     public Map<String, Object> toMap() {
         Map<String, Object> values = new HashMap<>();

@@ -7,8 +7,6 @@ import filmorate.model.Mpa;
 import filmorate.model.User;
 import filmorate.service.FilmService;
 import filmorate.service.UserService;
-import filmorate.storage.impl.GenreDbStorage;
-import filmorate.storage.impl.MpaDbStorage;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,8 +33,6 @@ class FilmServiceTest {
 
     private final FilmService filmService;
     private final UserService userService;
-    private final MpaDbStorage mpaDbStorage;
-    private final GenreDbStorage genreDbStorage;
 
     @BeforeEach
     public void beforeEach() {

@@ -117,7 +117,7 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public List<User> getFriendsList(Integer userId){
+    public List<User> getFriendsList(Integer userId) {
         String sqlQueryGetFriends = "SELECT * " +
                 "FROM USERS " +
                 "INNER JOIN friends f ON USERS.id = f.friend_id " +
