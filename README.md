@@ -1,6 +1,6 @@
 # java-filmorate
 Template repository for Filmorate project.
-![filmorate](https://github.com/RinaEgo/java-filmorate/assets/119045429/fec8de35-f829-437b-9527-de5ac139501f)
+![filmorate_db_updated](https://github.com/RinaEgo/java-filmorate/assets/119045429/0235ea83-a1a9-42fc-b24d-52bf4a124db2)
 
 Примеры запросов к БД:
 1. Получить фильм по идентификатору (n): 
