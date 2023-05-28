@@ -1,16 +1,21 @@
 package filmorate;
 
-import filmorate.controller.FilmController;
 import filmorate.exception.ValidationException;
 import filmorate.model.Film;
 
+import filmorate.model.Mpa;
+import filmorate.model.User;
 import filmorate.service.FilmService;
 import filmorate.service.UserService;
-import filmorate.storage.film.InMemoryFilmStorage;
-import filmorate.storage.user.InMemoryUserStorage;
+import filmorate.storage.impl.GenreDbStorage;
+import filmorate.storage.impl.MpaDbStorage;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -20,12 +25,18 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class FilmControllerTest {
+@SpringBootTest
+@AutoConfigureTestDatabase
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+class FilmServiceTest {
     ValidatorFactory factory;
     private Validator validator;
-    @Autowired
-    FilmController filmController = new FilmController(new FilmService(new InMemoryFilmStorage(),
-            new UserService(new InMemoryUserStorage())));
+
+    private final FilmService filmService;
+    private final UserService userService;
+    private final MpaDbStorage mpaDbStorage;
+    private final GenreDbStorage genreDbStorage;
 
     @BeforeEach
     public void beforeEach() {
@@ -39,11 +50,11 @@ class FilmControllerTest {
                 "Film",
                 "Comedy",
                 LocalDate.of(2020, 1, 1),
-                120);
+                120, new Mpa(1, "G"));
 
-        filmController.createFilm(film);
+        filmService.createFilm(film);
 
-        List<Film> testList = filmController.findAllFilms();
+        List<Film> testList = filmService.findAllFilms();
 
         assertEquals(1, testList.size(), "Количество фильмов некорректно.");
         assertEquals(film.getId(), testList.get(0).getId(), "ID не совпадает.");
@@ -59,11 +70,11 @@ class FilmControllerTest {
                 "",
                 "Comedy",
                 LocalDate.of(2020, 1, 1),
-                120);
+                120, new Mpa(1, "G"));
 
         assertEquals(1, validator.validate(film).size(), "Некорректная работа с ошибочными данными.");
 
-        List<Film> testList = filmController.findAllFilms();
+        List<Film> testList = filmService.findAllFilms();
         assertEquals(0, testList.size(), "Был добавлен фильм с некорректными данными.");
     }
 
@@ -73,11 +84,11 @@ class FilmControllerTest {
                 " ",
                 "Comedy",
                 LocalDate.of(2020, 1, 1),
-                120);
+                120, new Mpa(1, "G"));
 
         assertEquals(1, validator.validate(film).size(), "Некорректная работа с ошибочными данными.");
 
-        List<Film> testList = filmController.findAllFilms();
+        List<Film> testList = filmService.findAllFilms();
         assertEquals(0, testList.size(), "Был добавлен фильм с некорректными данными.");
     }
 
@@ -89,11 +100,11 @@ class FilmControllerTest {
                         "toomanysymbolstoomanysymbolstoomanysymbolstoomanysymbolstoomanysymbolstoomanysymbols" +
                         "toomanysymbolstoomanysymbolstoomanysymbolstoomanysymbolstoomanysymbolstoomanysymbols",
                 LocalDate.of(2020, 1, 1),
-                120);
+                120, new Mpa(1, "G"));
 
         assertEquals(1, validator.validate(film).size(), "Некорректная работа с ошибочными данными.");
 
-        List<Film> testList = filmController.findAllFilms();
+        List<Film> testList = filmService.findAllFilms();
         assertEquals(0, testList.size(), "Был добавлен фильм с некорректными данными.");
     }
 
@@ -103,13 +114,13 @@ class FilmControllerTest {
                 "Film",
                 "Comedy",
                 LocalDate.of(1000, 1, 1),
-                120);
+                120, new Mpa(1, "G"));
 
-        Throwable thrown = assertThrows(ValidationException.class, () -> filmController.createFilm(film));
+        Throwable thrown = assertThrows(ValidationException.class, () -> filmService.createFilm(film));
         assertNotNull(thrown.getMessage(), "Исключение выбрасывается некорректно.");
         assertEquals("Дата релиза раньше допустимой.", thrown.getMessage(), "Выброс исключения работает некорректно.");
 
-        List<Film> testList = filmController.findAllFilms();
+        List<Film> testList = filmService.findAllFilms();
         assertEquals(0, testList.size(), "Был добавлен фильм с некорректными данными.");
     }
 
@@ -119,11 +130,11 @@ class FilmControllerTest {
                 "Film",
                 "Comedy",
                 LocalDate.of(2020, 1, 1),
-                -120);
+                -120, new Mpa(1, "G"));
 
         assertEquals(1, validator.validate(film).size(), "Некорректная работа с ошибочными данными.");
 
-        List<Film> testList = filmController.findAllFilms();
+        List<Film> testList = filmService.findAllFilms();
         assertEquals(0, testList.size(), "Был добавлен фильм с некорректными данными.");
     }
 
@@ -133,11 +144,58 @@ class FilmControllerTest {
                 "Film",
                 "Comedy",
                 LocalDate.of(2020, 1, 1),
-                0);
+                0, new Mpa(1, "G"));
 
         assertEquals(1, validator.validate(film).size(), "Некорректная работа с ошибочными данными.");
 
-        List<Film> testList = filmController.findAllFilms();
+        List<Film> testList = filmService.findAllFilms();
         assertEquals(0, testList.size(), "Был добавлен фильм с некорректными данными.");
+    }
+
+    @Test
+    public void testAddLike() {
+        Film film = new Film(1,
+                "Film",
+                "Comedy",
+                LocalDate.of(2020, 1, 1),
+                120, new Mpa(1, "G"));
+
+        User user = new User(1,
+                "email",
+                "login",
+                "name",
+                LocalDate.of(2010, 8, 15));
+
+        userService.createUser(user);
+
+        filmService.createFilm(film);
+
+        filmService.addLike(1, 1);
+
+        assertEquals(1, filmService.getFilmById(1).getLikes().size(), "Лайки добавляются некорректно.");
+    }
+
+    @Test
+    public void testDeleteLike() {
+        Film film = new Film(1,
+                "Film",
+                "Comedy",
+                LocalDate.of(2020, 1, 1),
+                120, new Mpa(1, "G"));
+
+        User user = new User(1,
+                "email",
+                "login",
+                "name",
+                LocalDate.of(2010, 8, 15));
+
+        userService.createUser(user);
+
+        filmService.createFilm(film);
+
+        filmService.addLike(1, 1);
+        filmService.deleteLike(1, 1);
+
+        assertEquals(0, filmService.getFilmById(1).getLikes().size(), "Лайки удаляются некорректно.");
     }
 }

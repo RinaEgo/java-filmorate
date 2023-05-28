@@ -1,8 +1,7 @@
 package filmorate.model;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
@@ -22,25 +21,45 @@ public class Film {
 
     @NotNull(message = "Название не должно быть пустым.")
     @NotBlank(message = "Название введено некорректно.")
-    private final String name;
+    private String name;
 
     @Size(max = 200, message = "Длина описания превышает допустимое значение.")
-    private final String description;
+    private String description;
 
-    private final LocalDate releaseDate;
+    private LocalDate releaseDate;
 
     @Positive(message = "Продолжительность фильма должна быть положительной.")
-    private final Integer duration;
+    private Integer duration;
+
+    private Mpa mpa;
+
+    private Set<Genre> genres;
 
     @JsonIgnore
     private Set<Integer> likes;
 
-    public Film(Integer id, String name, String description, LocalDate releaseDate, Integer duration) {
+
+    public Film(Integer id, String name, String description, LocalDate releaseDate, Integer duration, Mpa mpa) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.releaseDate = releaseDate;
         this.duration = duration;
-        this.likes = new HashSet<>();
+        this.mpa = mpa;
+        this.genres = new LinkedHashSet<>();
+        this.likes = new LinkedHashSet<>();
+    }
+
+
+    public Map<String, Object> toMap() {
+        Map<String, Object> values = new HashMap<>();
+        values.put("id", id);
+        values.put("name", name);
+        values.put("description", description);
+        values.put("release_date", releaseDate);
+        values.put("duration", duration);
+        values.put("rating_id", mpa.getId());
+
+        return values;
     }
 }

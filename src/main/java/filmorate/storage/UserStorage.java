@@ -1,4 +1,4 @@
-package filmorate.storage.user;
+package filmorate.storage;
 
 import filmorate.model.User;
 
@@ -12,4 +12,10 @@ public interface UserStorage {
     User createUser(User user);
 
     User updateUser(User user);
+
+    void addFriend(Integer userId, Integer friendId);
+
+    void deleteFriend(Integer userId, Integer friendId);
+
+    List<User> getFriendsList(Integer userId);
 }
