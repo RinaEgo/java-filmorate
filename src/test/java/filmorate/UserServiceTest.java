@@ -141,7 +141,7 @@ class UserServiceTest {
     }
 
     @Test
-    public void testAddFriend() {
+    void testAddFriend() {
         User first = new User(4,
                 "loginOne",
                 "nameOne",
@@ -163,7 +163,7 @@ class UserServiceTest {
     }
 
     @Test
-    public void testGetFriendsList() {
+    void testGetFriendsList() {
         User first = userService.createUser(new User(6,
                 "mail@mail.ru",
                 "dolore",
@@ -190,7 +190,7 @@ class UserServiceTest {
     }
 
     @Test
-    public void testDeleteFromFriend() {
+    void testDeleteFromFriend() {
         User first = userService.createUser(new User(9,
                 "mail@mail.ru",
                 "dolore",

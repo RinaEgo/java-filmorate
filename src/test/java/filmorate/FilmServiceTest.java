@@ -112,9 +112,10 @@ class FilmServiceTest {
                 LocalDate.of(1000, 1, 1),
                 120, new Mpa(1, "G"));
 
-        Throwable thrown = assertThrows(ValidationException.class, () -> filmService.createFilm(film));
-        assertNotNull(thrown.getMessage(), "Исключение выбрасывается некорректно.");
-        assertEquals("Дата релиза раньше допустимой.", thrown.getMessage(), "Выброс исключения работает некорректно.");
+        Throwable thrown = assertThrows(ValidationException.class, () -> filmService.createFilm(film),
+                "Исключение выбрасывается некорректно.");
+        assertNotNull(thrown.getMessage(), "Не отображается сообщение в исключении.");
+        assertEquals("Дата релиза раньше допустимой.", thrown.getMessage(), "Сообщение в исключении некорректное.");
 
         List<Film> testList = filmService.findAllFilms();
         assertEquals(0, testList.size(), "Был добавлен фильм с некорректными данными.");
@@ -149,7 +150,7 @@ class FilmServiceTest {
     }
 
     @Test
-    public void testAddLike() {
+    void testAddLike() {
         Film film = new Film(1,
                 "Film",
                 "Comedy",
@@ -172,7 +173,7 @@ class FilmServiceTest {
     }
 
     @Test
-    public void testDeleteLike() {
+    void testDeleteLike() {
         Film film = new Film(1,
                 "Film",
                 "Comedy",

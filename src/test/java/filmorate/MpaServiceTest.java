@@ -23,7 +23,7 @@ class MpaServiceTest {
     private final MpaService mpaService;
 
     @Test
-    void getAllMpa() {
+    void testGetAllMpa() {
         List<Mpa> mpa = new ArrayList<>();
         mpa.add(new Mpa(1, "G"));
         mpa.add(new Mpa(2, "PG"));
@@ -35,7 +35,7 @@ class MpaServiceTest {
     }
 
     @Test
-    void getMpaById() {
+    void testGetMpaById() {
         assertEquals("G", mpaService.getMpaById(1).getName(), "Получение рейтинга по id работает некорректно.");
     }
 }

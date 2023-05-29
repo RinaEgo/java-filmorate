@@ -23,7 +23,7 @@ class GenreServiceTest {
     private final GenreService genreService;
 
     @Test
-    void getAllGenres() {
+    void testGetAllGenres() {
         List<Genre> genres = new ArrayList<>();
         genres.add(new Genre(1, "Комедия"));
         genres.add(new Genre(2, "Драма"));
@@ -36,7 +36,7 @@ class GenreServiceTest {
     }
 
     @Test
-    void getGenreById() {
+    void testGetGenreById() {
         assertEquals("Комедия", genreService.getGenreById(1).getName(), "Получение жанра по id работает некорректно.");
     }
 }

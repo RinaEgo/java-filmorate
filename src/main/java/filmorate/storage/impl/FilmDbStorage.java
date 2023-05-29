@@ -126,17 +126,18 @@ public class FilmDbStorage implements FilmStorage {
             throw new ValidationException("Фильм уже существует.");
         } else if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
             throw new ValidationException("Дата релиза раньше допустимой.");
+        } else {
+            SimpleJdbcInsert insert = new SimpleJdbcInsert(jdbcTemplate)
+                    .withTableName("FILMS")
+                    .usingGeneratedKeyColumns("id");
+
+            int id = insert.executeAndReturnKey(film.toMap()).intValue();
+            film.setId(id);
+
+            setFilmGenre(film);
+
+            return getFilmById(id);
         }
-        SimpleJdbcInsert insert = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("FILMS")
-                .usingGeneratedKeyColumns("id");
-
-        int id = insert.executeAndReturnKey(film.toMap()).intValue();
-        film.setId(id);
-
-        setFilmGenre(film);
-
-        return getFilmById(id);
     }
 
     @Override
