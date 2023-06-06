@@ -2,7 +2,7 @@ package filmorate.service;
 
 import filmorate.exception.NotFoundException;
 import filmorate.model.Film;
-import filmorate.storage.film.FilmStorage;
+import filmorate.storage.FilmStorage;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -43,16 +43,19 @@ public class FilmService {
         }
     }
 
-    public void addLike(Integer filmId, Integer userId) {
+    public Film addLike(Integer filmId, Integer userId) {
         validateFilm(filmId);
         userService.validateUser(userId);
 
         Film film = filmStorage.getFilmById(filmId);
 
         film.getLikes().add(userId);
+        filmStorage.updateFilm(film);
+
+        return film;
     }
 
-    public void deleteLike(Integer filmId, Integer userId) {
+    public Film deleteLike(Integer filmId, Integer userId) {
         validateFilm(filmId);
         userService.validateUser(userId);
 
@@ -63,6 +66,9 @@ public class FilmService {
         } else {
             throw new NotFoundException("Лайк пользователя с ID " + userId + " не найден.");
         }
+        filmStorage.updateFilm(film);
+
+        return film;
     }
 
     public List<Film> getMostPopularFilms(Integer count) {

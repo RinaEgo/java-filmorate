@@ -1,12 +1,14 @@
 package filmorate;
 
-import filmorate.controller.UserController;
 import filmorate.model.User;
 import filmorate.service.UserService;
-import filmorate.storage.user.InMemoryUserStorage;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -15,13 +17,18 @@ import javax.validation.ValidatorFactory;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-class UserControllerTest {
+@SpringBootTest
+@AutoConfigureTestDatabase
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+class UserServiceTest {
     ValidatorFactory factory;
     private Validator validator;
-    @Autowired
-    UserController userController = new UserController(new UserService(new InMemoryUserStorage()));
+    private final UserService userService;
 
     @BeforeEach
     public void beforeEach() {
@@ -37,9 +44,9 @@ class UserControllerTest {
                 "Nick Name",
                 LocalDate.of(1946, 8, 20));
 
-        userController.createUser(user);
+        userService.createUser(user);
 
-        List<User> testList = userController.findAllUsers();
+        List<User> testList = userService.findAllUsers();
 
         assertEquals(1, testList.size(), "Количество пользователей некорректно.");
         assertEquals(user.getId(), testList.get(0).getId(), "ID не совпадает.");
@@ -59,7 +66,7 @@ class UserControllerTest {
 
         assertEquals(1, validator.validate(user).size(), "Некорректная работа с ошибочными данными.");
 
-        List<User> testList = userController.findAllUsers();
+        List<User> testList = userService.findAllUsers();
         assertEquals(0, testList.size(), "Был добавлен пользователь с некорректными данными.");
     }
 
@@ -73,7 +80,7 @@ class UserControllerTest {
 
         assertEquals(1, validator.validate(user).size(), "Некорректная работа с ошибочными данными.");
 
-        List<User> testList = userController.findAllUsers();
+        List<User> testList = userService.findAllUsers();
         assertEquals(0, testList.size(), "Был добавлен пользователь с некорректными данными.");
     }
 
@@ -87,7 +94,7 @@ class UserControllerTest {
 
         assertEquals(1, validator.validate(user).size(), "Некорректная работа с ошибочными данными.");
 
-        List<User> testList = userController.findAllUsers();
+        List<User> testList = userService.findAllUsers();
         assertEquals(0, testList.size(), "Был добавлен пользователь с некорректными данными.");
     }
 
@@ -101,7 +108,7 @@ class UserControllerTest {
 
         assertEquals(1, validator.validate(user).size(), "Некорректная работа с ошибочными данными.");
 
-        List<User> testList = userController.findAllUsers();
+        List<User> testList = userService.findAllUsers();
         assertEquals(0, testList.size(), "Был добавлен пользователь с некорректными данными.");
     }
 
@@ -113,8 +120,8 @@ class UserControllerTest {
                 "",
                 LocalDate.of(1946, 8, 20));
 
-        userController.createUser(user);
-        List<User> testList = userController.findAllUsers();
+        userService.createUser(user);
+        List<User> testList = userService.findAllUsers();
 
         assertEquals(user.getLogin(), testList.get(0).getName(), "Имя не совпадает.");
     }
@@ -129,7 +136,75 @@ class UserControllerTest {
 
         assertEquals(1, validator.validate(user).size(), "Некорректная работа с ошибочными данными.");
 
-        List<User> testList = userController.findAllUsers();
+        List<User> testList = userService.findAllUsers();
         assertEquals(0, testList.size(), "Был добавлен пользователь с некорректными данными.");
+    }
+
+    @Test
+    void testAddFriend() {
+        User first = new User(4,
+                "loginOne",
+                "nameOne",
+                "email@email.ru",
+                LocalDate.of(1990, 12, 12));
+
+        User second = new User(5,
+                "loginTwo",
+                "nameTwo",
+                "yandex@yandex.ru",
+                LocalDate.of(1995, 5, 5));
+
+
+        userService.createUser(first);
+        userService.createUser(second);
+
+        userService.addFriend(first.getId(), second.getId());
+        assertEquals(1, userService.getFriendsList(first.getId()).size(), "Пользователь добавлен в друзья некорректно.");
+    }
+
+    @Test
+    void testGetFriendsList() {
+        User first = userService.createUser(new User(6,
+                "mail@mail.ru",
+                "dolore",
+                "Nick Name",
+                LocalDate.of(1980, 8, 20)));
+
+        User second = userService.createUser(new User(7,
+                "mmail@mail.ru",
+                "nedolore",
+                "NickName",
+                LocalDate.of(1951, 8, 20)));
+
+        User third = userService.createUser(new User(8,
+                "mmmail@mail.ru",
+                "tridolore",
+                "Nick",
+                LocalDate.of(2000, 8, 20)));
+
+        userService.addFriend(first.getId(), second.getId());
+        userService.addFriend(first.getId(), third.getId());
+
+        List<User> friends = new ArrayList<>(Arrays.asList(second, third));
+        assertEquals(friends, userService.getFriendsList(first.getId()), "Пользователи добавлены в друзья некорректно.");
+    }
+
+    @Test
+    void testDeleteFromFriend() {
+        User first = userService.createUser(new User(9,
+                "mail@mail.ru",
+                "dolore",
+                "Nick Name",
+                LocalDate.of(1945, 8, 20)));
+
+        User second = userService.createUser(new User(10,
+                "mmail@mail.ru",
+                "nedolore",
+                "NickName",
+                LocalDate.of(2011, 8, 20)));
+
+        userService.addFriend(first.getId(), second.getId());
+        userService.deleteFriend(first.getId(), second.getId());
+        assertEquals(0, userService.getFriendsList(first.getId()).size(), "Удаление из друзей работает некорректно.");
     }
 }
